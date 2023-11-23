@@ -571,7 +571,7 @@ trusted {
     
     The server application and the client application in Figure \ref{fig:hares edger8 tool generating wrapper codes} give us a high-level idea of how the RPC mode of \monitor works. Initially, the untrusted part of the app residing in the non-SGX node executes as it is until it wants to execute an enclave function. Once the execution reaches the create enclave function, the wrappers created by the \monitor edger8r send all the information needed to the wrappers residing on the other node, i.e., the SGX capable node. Here, the wrapper code calls the enclave function as it would be normally generated. After enclave execution, the control is transferred back to the non-SGX node with the client-side wrapper created by the \monitor edger8r tool. The above-mentioned logic continues as long as an enclave function is to be executed until the end of application execution. 
 
-    \chapter{Evaluation}
+    \chapter{Evaluation} \label{Evaluation}
     This chapter is organized into the following sections. Section \ref{ase:experimental setup} introduces the experimental setup used for evaluating \monitor. Following that, Sections \ref{ase:Performance breakdown of remote enclave calls}, \ref{ase:performance evaluation of monitor mode}, \ref{sse:system_call_events_monitor_mode} delve into the performance evaluation of applications, providing a breakdown for the \monitor Monitor mode. Similarly, Sections \ref{sse:Performance evaluation of RPC mode}, \ref{sse:Profiling of serialization and deserialization cost for RPC mode} discuss the performance of \monitor RPC mode. Finally, Section \ref{sse:Security evaluation} conducts the security evaluation of \monitor.
     
     \section{Experimental setup} \label{ase:experimental setup}
@@ -580,7 +580,7 @@ trusted {
     \begin{table}[h]
 	\centering
 	\footnotesize
-	\caption{Experimental hardware setup}
+	\caption{Experimental hardware setup.}
 	\begin{tabular}{| c | c | c | c |} \hline
 		Scenarios & \multicolumn{2}{|c|}{Heterogeneous offloading} & Homogeneous offloading \\ \hline \hline
 		CPU & \makecell{Neoverse-N1 \\(ARMv7)} & \makecell{Intel Xeon \\P-8370C} & \makecell{Intel Xeon \\CPU P-8370C} \\ \hline
@@ -635,8 +635,7 @@ trusted {
     \label{tab:exe_time}
     \end{table*}
 
-    For applications with longer execution time (e.g., SGX-DNet and Plinius), \monitor does not bring significant performance overhead. For small applications with shorter execution time, the cross-node enclave offloading and control flow transformation cost dominate
-    the overall execution time. Thus, applications such as file encryptor and data sealing have a larger normalized performance overhead. 
+    For applications with longer execution time (e.g., SGX-DNet and Plinius), \monitor does not bring significant performance overhead. For small applications with shorter execution time, the remote enclave offloading and control flow transformation cost dominate the overall execution time. Thus, applications such as file encryptor and data sealing have a larger normalized performance overhead. 
 
         \begin{figure}[htb]
             \centering
@@ -651,7 +650,7 @@ trusted {
     \begin{figure}[H]
     \centering
     \includegraphics[scale=1.1]{figures/perf_char_monitor.png}
-    \caption{Profile of a number of system events running applications benchmarks.} 
+    \caption{Profile of a number of system events while running applications with monitor mode.} 
     \label{fig:client_instructions}
     \end{figure}
 
@@ -669,27 +668,34 @@ trusted {
     
     
     \section{Profiling of serialization and deserialization cost for RPC mode} \label{sse:Profiling of serialization and deserialization cost for RPC mode}
-    Similar to the profiling of the APIs for the \monitor Monitor mode in Section \ref{sse:system_call_events_monitor_mode}, this section breaks down the performance results for Figure \ref{fig:rpc_enclave_offloading}. The results are shown in Figure \ref{fig:perf_breakdown_rpc}. Networking performance significantly impacts the overall performance of the application, with a considerable amount of time being spent on transferring bytes back and forth. Another interesting observation is that serialization or deserialization takes very minimal time, in fact, just a few milliseconds.
+    Similar to the profiling of the APIs for the \monitor Monitor mode in Section \ref{sse:system_call_events_monitor_mode}, this section breaks down the performance results for Figure \ref{fig:rpc_enclave_offloading}. The results are shown in Figures \ref{fig:perf_breakdown_rpc} and \ref{fig:profile_rpc}. Networking performance significantly impacts the overall performance of the application, with a considerable amount of time being spent on transferring bytes back and forth. Another interesting observation is that serialization or deserialization takes very minimal time, in fact, just a few milliseconds.
 
     \begin{figure}[htb]
         \centering
         \includegraphics[scale=0.6]{figures/perf_breakdown_rpc.png}
-        \caption{Performance breakdown of Applications with \monitor RPC mode} 
+        \caption{Performance Characterization of Applications with \monitor RPC Mode.} 
         \label{fig:perf_breakdown_rpc}
     \end{figure}
+
+    \begin{figure*}[htp]
+    \centering
+    \includegraphics[width=.50\textwidth]{figures/a-migrations_rpc.png}%
+    \hfill
+    \includegraphics[width=.50\textwidth]{figures/b-bytes_transferred_rpc.png}%
+    \caption{Profile of a number of system events while running applications with RPC mode.}
+    \label{fig:profile_rpc}
+    \end{figure*}
+
     
     \section{Security evaluation} \label{sse:Security evaluation}
-    The main goal of Hares is to bridge the security hardware availability gap in a hybrid-CPU environment. Hares provides a distributed shared memory to transparently hide the memory inconsistency of different machine nodes while still being able to expose the confidential computation capability across the machine boundary. With \monitor, applications that run on a low-end non-SGX device can still utilize hardware extensions available on a remote node.
-    When there is a need for confidential computation, Hares intercepts the ecall replaced by the instrumented debug instruction and then redirects the control flow to the remote enclave code. The target application will not be aware of anything different unless the remote enclave code tries to access data from the target application. Once there is a data access, the Hares monitor receives a
-    page fault and retrieves the missing memory page from the original node. Note that a malicious program cannot prevent or intercept the page fault handling as the page fault handler runs within the \monitor code monitor’s address space. Whenever the confidential computation is finished, the control flow transfers back to the original node, and the target application can only see the encrypted
-    memory pages. We have to note that a malicious operating system may try to compromise the Hares code monitor, as it runs entirely in the userspace. A possible solution to prevent this attack is to issue a remote attestation and check the integrity of the \monitor monitor before the remote ecall. We leave the implementation as future work.
+    The primary objective of Hares is to address the security hardware availability gap in both homogeneous and heterogeneous environments. This section focuses on the security evaluation of \monitor and is structured as follows. Subsection \ref{ase:threat model} outlines the threat model for \monitor. Following that, subsection \ref{cve analysis} conducts an analysis of Common Vulnerabilities and Exposures (CVE) for \monitor. Finally, subsection \ref{remote attestation} explores the remote attestation capability of \monitor. 
     
-    \subsection{Threat model}
+    \subsection{Threat model} \label{ase:threat model}
     We assume a threat model that falls in line with the threat model of SGX. The adversary is believed to be in possession of super root privileges who has access to all the software and physical hardware. Hence, all the software including the instances of \monitor, Untrusted part of \monitor client, Operating System along with the hardware such as DRAM, other peripherals across two nodes are not trusted. We solely rely upon the SGX based CPU along with the enclave and trust the primitives of Intel SGX mechanism.
 
     Furthermore, we assume that the code running inside enclave is benign and does not voluntarily relinquish any secret keys or critical information. Enclave developers are expected to implement security techniques, such as the one discussed in \cite{Protecting, SGX-Defense}, to safeguard against potential vulnerabilities in the enclave binary interface. Additionally, we take no responsibility in addressing the side channel attacks upon SGX enclaves. With our system, known as Hares, when an enclave is offloaded onto a remote node, it inherits the standard security benefits provided by the standard SGX protection mechanisms. This ensures that sensitive operations within the enclave remain secure and isolated from potential threats.
 
-    \subsection{CVE analysis}
+    \subsection{CVE analysis} \label{cve analysis}
     In this section, we will enumerate and comprehensively discuss the types of CVEs that can be protected by leveraging the SGX as offered by \monitor. The \monitor plays a pivotal role in mitigating prevalent weaknesses and vulnerabilities, such as CWE-798 (Use of Hard-coded Credentials), CWE-200 (Information Exposure), CWE-321 (Hardcoded Cryptographic Key), CWE-326 (Inadequate Encryption Strength), and numerous others. Sadly, these kinds of vulnerabilities still persist within the realm of IoT, yet they can be readily averted through the utilization of SGX, as offered by \monitor. The Table \ref{t:CVEs} lists some of the CVEs that could be mitigated by deploying \monitor.
 
     For example, CVE-2019-13604 represents a vulnerability arising from a short key weakness, enabling potential attackers to employ brute force techniques to extract the key used for image obfuscation, subsequently granting them access to decrypt the protected image. With \monitor, the encryption key can be initially generated within the enclave and securely sealed in protected storage for future encryption \& decryption of images. In this case, even if an attacker manages to compromise the host system, they will be unable to access the enclave or extract the encryption key, rendering the brute force attack ineffective. Similarly, consider CVE-2023-37468, where passwords are stored in clear text within the database, devoid of encryption. This vulnerability can also be averted by utilizing \monitor SGX to encrypt the passwords along with the database using the SGX based SQLite alike databases that \monitor support, thereby enhancing their security.
@@ -699,7 +705,7 @@ trusted {
     \begin{table*}[t]
     \centering
     \footnotesize
-    \caption{CVEs that could be mitigated with \monitor}
+    \caption{CVEs that could be mitigated with \monitor.}
     \begin{tabular}{| c | c |} \hline
           CWE & CVE \\ \hline \hline
         Buffer overflows & CVE-2017-10720, CVE-2017-10722, CVE-2023-25668\\ \hline  
@@ -711,25 +717,46 @@ trusted {
     \label{t:CVEs}
     \end{table*}
 
-    \subsection{Remote Attestation}
+    \subsection{Remote Attestation} \label{remote attestation}
     With the utilization of \monitor, remote attestation functions in a manner similar to other use cases. Initially, the host process, residing in the non-SGX node, receives the challenge from the remote attestation service. This challenge is subsequently decrypted and signed by the enclave in the SGX node, facilitated by the \monitor. Following the completion of enclave’s operation, the enclave report, along with the signature from the quoting enclave will be sent to the remote attestation service from the host process in non-SGX node. Finally, the host process in the non-SGX receives the verification report from the remote attestation service.
+
+    \chapter{Conclusion}
+    \section{Summary of Contributions}
+    In this thesis, we introduced \monitor, a system designed to offload confidential computation across homogeneous and heterogeneous boundaries. Embedded and other resource-constrained systems often lack sophisticated security measures, such as Trusted Execution Environment (TEE), making them suitable candidates for leveraging the capabilities of \monitor. The system incorporates a memory synchronization model facilitated by a userspace monitor for framework-agnostic homogeneous offloading. Additionally, it employs an RPC-based design for Open Enclave-based heterogeneous offloading.
+    
+    To offload computations to a remote node, both modes of \monitor exhibit a significant dependency on networking. Therefore, with faster networks, \monitor, regardless of its mode, will deliver better performance for offloading confidential computation.
+    
+    The major contributions of \monitor can be summarized as follows:
+    \begin{enumerate}
+        \item We implemented two modes of \monitor, monitor and RPC, that allow programs to offload their hardware security extensions transparently across homogeneous and heterogeneous architectures. 
+        \item We evaluated the prototype of \monitor using open-source machine learning and data sealing applications. The evaluation results show that \monitor secures confidential computations on top of hybrid and distributed machines with an acceptable performance overhead.
+        \item We conducted a security evaluation by identifying and addressing Common Vulnerability Exposures (CVE). This analysis underscores the advantages of utilizing \monitor to leverage remote Trusted Execution Environments (TEEs) as a means to mitigate and avoid such CVEs.
+    \end{enumerate}
+
+    The following section talks about the limitations of using \monitor and also about the future works to improve HARES.
+
+    \section{Limitations}
+    Some of the limitations of \monitor are discussed in this section. 
+    
+    \begin{enumerate}
+        \item In the monitor mode of \monitor, to offload confidential computations, the process's memory is duplicated on both nodes. While the confidential computations within the enclave remain secure, the duplication of the process's untrusted memory expands the attack surface. This expansion can cause potential security risks to untrusted computations.
+        \item The \monitor presented in this thesis currently does not support multi-threading. While the incorporation of multi-threading is not infeasible, it would require engineering effort. The implementation would involve synchronizing all threads and placing them in a suspended state before migration. It's important to note that such an addition might introduce additional overhead to the overall performance.
+        \item As mentioned in the Chapter \ref{Evaluation}, the performance of \monitor primarily relies on network performance. This is particularly evident in the monitor mode of \monitor, where a substantial number of pages are transmitted back and forth during migrations for memory synchronization.
+        \item Since \monitor is implemented solely in user-space, offloading secured computations that handle resources such as files and devices interchangeably across the trusted and untrusted worlds presents a challenge. This is due to the necessity for implementations to share resources within kernels residing across two nodes.
+    \end{enumerate}
+    
+    \section{Future Work}
+    This section discusses about the work that could expand the applications and efficiency of HARES.
+
+    In addition to Intel SGX's enclave, several other hardware security extensions can be considered for offloading. These extensions include hardware-based control flow enhancement \cite{intel_cet}, pointer authentication \cite{pointer_authentication}, memory tagging \cite{arm_mte}, and various others. Determining the scope and methodology for offloading these extensions represents an intriguing avenue for future research.
+
+    Currenly for the monitor mode, supporting Address Space Layout Randomization (ASLR) \cite{ASLR} is also important, as it provides a security technique to prevent memory-based attacks on the system. This can be implemented by mapping the memory layout of one node onto the other and then updating the respective memory during the transition process.
 
     
 	% This is the standard bibtex file. Do not include the .bib extension in <bib_file_name>.
 	% Uncomment the following lines to include your bibliography: 
 	%\bibliography{<bib_file_name>}
 	%\bibliographystyle{plainnat}   
-
-	% This formats the chapter name to appendix to properly define the headers:
-	\appendix
-
-	% Add your appendices here. You must leave the appendices enclosed in the appendices environment in order for the table of contents to be correct.
-	\begin{appendices}
-		\chapter{First Appendix} \label{app:appendix_one}
-			\section{Section one} \label{ase:app_one_sect_1}
-			\section{Section two} \label{ase:app_one_sect_2}
-		\chapter{Second Appendix} \label{app:appendix_two}
-	\end{appendices}
  
     \bibliographystyle{plainurl}
     \bibliography{references}
