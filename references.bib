@@ -12,6 +12,24 @@
     url = {https://en.wikipedia.org/wiki/Remote_procedure_call}
 }
 
+@inproceedings{Occulum,
+author = {Shen, Youren and Tian, Hongliang and Chen, Yu and Chen, Kang and Wang, Runji and Xu, Yi and Xia, Yubin and Yan, Shoumeng},
+title = {Occlum: Secure and Efficient Multitasking Inside a Single Enclave of Intel SGX},
+year = {2020},
+isbn = {9781450371025},
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/3373376.3378469},
+doi = {10.1145/3373376.3378469},
+abstract = {Intel Software Guard Extensions (SGX) enables user-level code to create private memory regions called enclaves, whose code and data are protected by the CPU from software and hardware attacks outside the enclaves. Recent work introduces library operating systems (LibOSes) to SGX so that legacy applications can run inside enclaves with few or even no modifications. As virtually any non-trivial application demands multiple processes, it is essential for LibOSes to support multitasking. However, none of the existing SGX LibOSes support multitasking both securely and efficiently.This paper presents Occlum, a system that enables secure and efficient multitasking on SGX. We implement the LibOS processes as SFI-Isolated Processes (SIPs). SFI is a software instrumentation technique for sandboxing untrusted modules (called domains). We design a novel SFI scheme named MPX-based, Multi-Domain SFI (MMDSFI) and leverage MMDSFI to enforce the isolation of SIPs. We also design an independent verifier to ensure the security guarantees of MMDSFI. With SIPs safely sharing the single address space of an enclave, the LibOS can implement multitasking efficiently. The Occlum LibOS outperforms the state-of-the-art SGX LibOS on multitasking-heavy workloads by up to 6,600x on micro-benchmarks and up to 500x on application benchmarks.},
+booktitle = {Proceedings of the Twenty-Fifth International Conference on Architectural Support for Programming Languages and Operating Systems},
+pages = {955–970},
+numpages = {16},
+keywords = {library os, intel mpx, multitasking, software fault isolation, intel sgx},
+location = {Lausanne, Switzerland},
+series = {ASPLOS '20}
+}
+
 @inproceedings {Gramine,
 author = {Chia-che Tsai and Donald E. Porter and Mona Vij},
 title = {{Graphene-SGX}: A Practical Library {OS} for Unmodified Applications on {SGX}},
@@ -94,11 +112,76 @@ month = oct
   year={2017}
 }
 
+@online{Triton,
+  key = {triton},
+  title={Triton (malware)},
+  url = {https://en.wikipedia.org/wiki/Triton_(malware)},
+  year={2023}
+}
+
+@online{Stuxnet,
+  key = {stuxnet},
+  title={Triton (malware)},
+  url = {https://en.wikipedia.org/wiki/Stuxnet},
+  year={2023}
+}
+
+@online{memory-scrapping,
+  key = {memory-scrapping},
+  title={target-breach-8-facts-on-memory-scraping-malware},
+  url = {https://www.darkreading.com/attacks-breaches/target-breach-8-facts-on-memory-scraping-malware},
+  year={2023}
+}
+
+
+
 @online{ASLR,
   key = {ASLR},
   title={Address Space Layout Randomization},
   url = {https://en.wikipedia.org/wiki/Address_space_layout_randomization},
   year={2023}
+}
+
+@online{IDC,
+  key = {idc},
+  title={Worldwide IDC Global DataSphere Forecast, 2022–2026: Enterprise Organizations Driving Most of the Data Growth},
+  url = {https://www.idc.com/getdoc.jsp?containerId=US49018922},
+  year={2023}
+}
+
+
+
+@online{CWE-119,
+  key = {cwe-119},
+  title={CWE-119: Improper Restriction of Operations within the Bounds of a Memory Buffer},
+  url = {https://cwe.mitre.org/data/definitions/119.html},
+  year={2023}
+}
+
+@online{CWE-798,
+  key = {cwe-798},
+  title={CWE-798: Use of Hard-coded Credentials},
+  url = {https://cwe.mitre.org/data/definitions/798.html},
+  year={2023}
+}
+
+@online{CWE-200,
+  key = {cwe-200},
+  title={CWE-200: Exposure of Sensitive Information to an Unauthorized Actor},
+  url = {https://cwe.mitre.org/data/definitions/200.html},
+  year={2023}
+}
+
+@inproceedings {APEX,
+author = {Ivan De Oliveira Nunes and Karim Eldefrawy and Norrathep Rattanavipanon and Gene Tsudik},
+title = {{APEX}: A Verified Architecture for Proofs of Execution on Remote Devices under Full Software Compromise},
+booktitle = {29th USENIX Security Symposium (USENIX Security 20)},
+year = {2020},
+isbn = {978-1-939133-17-5},
+pages = {771--788},
+url = {https://www.usenix.org/conference/usenixsecurity20/presentation/nunes},
+publisher = {USENIX Association},
+month = aug
 }
 
 @article{arm_mte,
@@ -215,6 +298,119 @@ month = nov
 title = {“Shim\_computing.” Wikipedia},
 year = { January 2023},
 url = {https://en.wikipedia.org/wiki/Shim_(computing)},
+}
+
+
+@online{tee,
+title = {“Trusted execution environment},
+year = {November 2023},
+url = {https://en.wikipedia.org/wiki/Trusted_execution_environment},
+}
+
+@online{CVE,
+title = {"What is CVE"},
+url = {https://www.balbix.com/insights/what-is-a-cve/},
+}
+
+@online{AMDSEV,
+title = {AMD Secure Encrypted Virtualization},
+url = {https://www.amd.com/en/developer/sev.html},
+}
+
+@online{RISCVKeystone,
+title = {Keystone Enclave},
+url = {https://riscv.org/wp-content/uploads/2018/12/Keystone-Enclave-An-Open-Source-Secure-Enclave-for-RISC-V.pdf},
+}
+
+@online{TPM,
+title = {Trusted Platform Module Technology},
+url = {https://learn.microsoft.com/en-us/windows/security/hardware-security/tpm/trusted-platform-module-overview}}
+
+
+@online{TXT,
+title = {Intel® Trusted Execution Technology (Intel® TXT) Overview},
+url = {https://www.intel.com/content/www/us/en/support/articles/000025873/processors.html}
+}
+
+@online{COMPEL,
+url = {https://criu.org/Compel},
+title = {Compel}}
+
+@online{Data-Sealing,
+url = {https://github.com/openenclave/openenclave/blob/master/samples/data-sealing/README.md},
+title = {Data-sealing Sample}}
+
+
+@online{SGX-depreciation,
+url = {https://community.intel.com/t5/Blogs/Products-and-Solutions/Security/Rising-to-the-Challenge-Data-Security-with-Intel-Confidential/post/1353141},
+title = {Rising to the Challenge — Data Security with Intel Confidential Computing}}
+
+@online{TDX,
+url = {https://www.intel.com/content/www/us/en/developer/tools/trust-domain-extensions/overview.html},
+title = {Intel® Trust Domain Extensions (Intel® TDX) }
+}
+
+@inproceedings{lynx:asplos20,
+  author    = {Maroun Tork and
+               Lina Maudlej and
+               Mark Silberstein},
+  editor    = {James R. Larus and
+               Luis Ceze and
+               Karin Strauss},
+  title     = {Lynx: {A} SmartNIC-driven Accelerator-centric Architecture for Network
+               Servers},
+  booktitle = {{ASPLOS} '20: Architectural Support for Programming Languages and
+               Operating Systems, Lausanne, Switzerland, March 16-20, 2020},
+  pages     = {117--131},
+  publisher = {{ACM}},
+  year      = {2020},
+  url       = {https://doi.org/10.1145/3373376.3378528},
+  doi       = {10.1145/3373376.3378528},
+  timestamp = {Tue, 21 Jul 2020 12:07:35 +0200},
+  biburl    = {https://dblp.org/rec/conf/asplos/TorkMS20.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+%% SmartNIC
+@inproceedings{xenic:sosp21,
+  author    = {Henry N. Schuh and
+               Weihao Liang and
+               Ming Liu and
+               Jacob Nelson and
+               Arvind Krishnamurthy},
+  editor    = {Robbert van Renesse and
+               Nickolai Zeldovich},
+  title     = {Xenic: SmartNIC-Accelerated Distributed Transactions},
+  booktitle = {{SOSP} '21: {ACM} {SIGOPS} 28th Symposium on Operating Systems Principles,
+               Virtual Event / Koblenz, Germany, October 26-29, 2021},
+  pages     = {740--755},
+  publisher = {{ACM}},
+  year      = {2021},
+  url       = {https://doi.org/10.1145/3477132.3483555},
+  doi       = {10.1145/3477132.3483555},
+  timestamp = {Fri, 22 Oct 2021 08:06:22 +0200},
+  biburl    = {https://dblp.org/rec/conf/sosp/SchuhLLNK21.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
+}
+
+@inproceedings{vigilia:edge18,
+  author    = {Rahmadi Trimananda and
+               Ali Younis and
+               Bojun Wang and
+               Bin Xu and
+               Brian Demsky and
+               Guoqing Harry Xu},
+  title     = {Vigilia: Securing Smart Home Edge Computing},
+  booktitle = {2018 {IEEE/ACM} Symposium on Edge Computing, {SEC} 2018, Seattle,
+               WA, USA, October 25-27, 2018},
+  pages     = {74--89},
+  publisher = {{IEEE}},
+  year      = {2018},
+  url       = {https://doi.org/10.1109/SEC.2018.00013},
+  doi       = {10.1109/SEC.2018.00013},
+  timestamp = {Wed, 16 Oct 2019 14:14:56 +0200},
+  biburl    = {https://dblp.org/rec/conf/edge/TrimanandaYWXDX18.bib},
+  bibsource = {dblp computer science bibliography, https://dblp.org}
 }
 
 @inproceedings{PANOPLY,
